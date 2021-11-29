@@ -1,29 +1,36 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from jsonrpc_requests import Server
 
 
 class Ui_MainWindow(object):
 
-    def CheckPostInfo(self):
-        GetPostPermlink = self.TextBoxPermlink.text()
-        permlink = GetPostPermlink.split("/", 2)
+    def ValidURLErrorMessage(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText('Paste a valid Hive url')
+        msg.setWindowTitle("Error")
+        msg.exec_()
+
+    def ParseURL(self, url_to_parse):
+        if len(url_to_parse) > 1:
+            permlink = url_to_parse[1].split("/", 2)
+        else:
+            permlink = url_to_parse[0].split("/", 2)
         username = permlink[0]
         post = permlink[1]
         server = Server('https://api.hive.blog')
         r = server.send_request(method_name="bridge.get_post", is_notification=False, params=[username, post])
-        
-
         author = r["author"]
         title = r["title"]
         tags = " ".join(r["json_metadata"]["tags"])
-
         creation_date = r["created"]
         payout = str(r["payout"])
         is_payout = str(r["is_paidout"])
         authors_payout = r["author_payout_value"]
         curators_payout = r["curator_payout_value"]
         body = r["body"]
-
         self.author.setText(author)
         self.title.setText(title)
         self.tags.setText(tags)
@@ -33,6 +40,31 @@ class Ui_MainWindow(object):
         self.authors_payout.setText(authors_payout)
         self.curators_payout.setText(curators_payout)
         self.body.setPlainText(body)
+
+    def CheckPostInfo(self):
+        self.author.setText("")
+        self.title.setText("")
+        self.tags.setText("")
+        self.creationdate.setText("")
+        self.payput.setText("")
+        self.is_payput.setText("")
+        self.authors_payout.setText("")
+        self.curators_payout.setText("")
+        self.body.setPlainText("")
+        unparced_url = self.TextBoxPermlink.text()
+        try:
+            post_url = unparced_url.split("@", 1)
+            try:
+                self.ParseURL(post_url)
+            except:
+                self.ValidURLErrorMessage()
+        except:
+            try:
+                url_list = ["", unparced_url]
+                self.ParseURL(url_list)
+            except:
+                self.ValidURLErrorMessage()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(910, 572)
