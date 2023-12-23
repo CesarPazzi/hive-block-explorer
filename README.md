@@ -13,17 +13,15 @@ In a Command Prompt or Terminal window type:
 
 This will download and extract the files in a folder called hive-block-explorer.
 
-## Python 3
-You have to install Python 3 and PIP (on Windows, PIP comes with Python installation, and on Linux, in mosts distros, Python 3 and PIP comes preinstalled). And have to install the following Python Libraries using PIP:
+## Installation
+You will need Python 3 (most Linux distros already come with Python preinstalled) to begin.
+Hive Block Explorer uses 2 Python libraries for working properly:
 
 * jsonrpc_requests
-* PyQt5
+* PySide6
 
-## PIP
-There's a requirements.txt file included in this repository to ease the installation of the required Python Libraries.
-On Windows, you could run `setup.cmd` to install the libraries using PIP or if it fails or don't want to run the file, you could type the following command on a Command Prompt window or a Terminal window on Linux.
+You can setup a Virtual Environment or run `setup.cmd` to install the libraries in your local Python installation. Basically this `setup.cmd` will call `pip install -r requirements.txt` command and install the required libraries with the proper versions.
 
-`pip install -r requirements.txt`
-
-# Uninstallation
-Once you are done, and want to remove it from your computer, you only have to delete the folder that generate the `git` command or where you extract the Zip file.
+## Uninstallation
+If you set a Virtual Environment, you can simply delete the folder you cloned with `git` command.
+If you will not use the libraries mentioned above, you can uninstall them running the command `pip uninstall -r requirements.txt` it will only uninstall the libraries and not the dependencies if any.
