@@ -1,2 +1,7 @@
 test.py
 test.json
+.venv
+build
+dist
+*.spec
+.vscode

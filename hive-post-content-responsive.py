@@ -1,17 +1,53 @@
-from PyQt5 import QtWidgets, uic
-import sys
+from PySide6.QtCore import QFile
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtWidgets import QApplication, QPushButton, QMessageBox, QLineEdit, QLabel, QTextBrowser
 from jsonrpc_requests import Server
-from PyQt5.QtWidgets import QMessageBox
+import os
 
-class Ui(QtWidgets.QMainWindow):
+basedir = os.path.dirname(__file__)
 
+class Ui:
+    def __init__(self):
+        # Load the .ui file
+        ui_file = QFile(os.path.join(basedir, "hive-post-content-responsive.ui"))
+        ui_file.open(QFile.ReadOnly)
+
+        ui_loader = QUiLoader()
+        self.ui_widget = ui_loader.load(ui_file)
+
+        ui_file.close()
+
+        # Access a widget (e.g., a QPushButton named "GetPostInfoButton")
+        self.GetPostInfoButton = self.ui_widget.findChild(QPushButton, "GetPostInfoButton")
+        
+        # Load all QLineEdit widgets
+        self.author = self.ui_widget.findChild(QLineEdit, "author")
+        self.title = self.ui_widget.findChild(QLineEdit, "title")
+        self.tags = self.ui_widget.findChild(QLineEdit, "tags")
+        self.creationdate = self.ui_widget.findChild(QLineEdit, "creationdate")
+        self.TextBoxPermlink = self.ui_widget.findChild(QLineEdit, "TextBoxPermlink")
+
+        # Load all QLabel widgets
+        self.payout = self.ui_widget.findChild(QLabel, "payout")
+        self.is_payout = self.ui_widget.findChild(QLabel, "is_payout")
+        self.authors_payout = self.ui_widget.findChild(QLabel, "authors_payout")
+        self.curators_payout = self.ui_widget.findChild(QLabel, "curators_payout")
+
+        # Load all QTextBrowser widgets
+        self.body = self.ui_widget.findChild(QTextBrowser, "body")
+
+        # Connect the button's clicked signal to a slot
+        if self.GetPostInfoButton:
+            self.GetPostInfoButton.clicked.connect(self.CheckPostInfo)
+
+    # This is the slot that gets called when the button is clicked
     def ValidURLErrorMessage(self):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Critical)
-        msg.setText("Error")
-        msg.setInformativeText('Paste a valid Hive url')
-        msg.setWindowTitle("Error")
-        msg.exec_()
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText('Paste a valid Hive url')
+            msg.setWindowTitle("Error")
+            msg.exec_()
 
     def ParseURL(self, url_to_parse):
         if len(url_to_parse) > 1:
@@ -65,12 +101,8 @@ class Ui(QtWidgets.QMainWindow):
             except:
                 self.ValidURLErrorMessage()
 
-    def __init__(self):
-        super(Ui, self).__init__()
-        uic.loadUi('hive-post-content-responsive.ui', self)
-        self.GetPostInfoButton.clicked.connect(self.CheckPostInfo) # We defined the function we want to run with the button
-        self.show()
-
-app = QtWidgets.QApplication(sys.argv)
-window = Ui()
-app.exec_()
+if __name__ == "__main__":
+    app = QApplication([])
+    window = Ui()
+    window.ui_widget.show()  # Show the loaded widget
+    app.exec()
