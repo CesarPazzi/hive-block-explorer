@@ -13,7 +13,7 @@ In a Command Prompt or Terminal window type:
 
 This will download and extract the files in a folder called hive-block-explorer.
 
-## Installation
+## Libraries
 You will need Python 3 (most Linux distros already come with Python preinstalled) to begin.
 Hive Block Explorer uses 2 Python libraries for working properly:
 
